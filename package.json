@@ -11,6 +11,7 @@
     "numeral": "^2.0.6",
     "react": "^16.13.1",
     "react-bootstrap": "^1.0.1",
+    "react-csv": "^2.0.3",
     "react-csv-reader": "^3.1.0",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1"

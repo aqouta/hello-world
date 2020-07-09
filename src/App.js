@@ -11,6 +11,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import './App.css';
+import {CSVLink} from 'react-csv'
 
 function App() {
 
@@ -19,6 +20,35 @@ function App() {
       minWidth: 650,
     },
   });
+
+  const headers = [{label:'Start Date',key:'StartDate'},
+  {label:'End Date',key:'EndDate'},
+  {label:'Portfolio Name',key:'PortfolioName'},
+  {label:'Currency',key:'Currency'},
+  {label:'Campaign Name',key:'CampaignName'},
+  {label:'Ad Group Name',key:'AdGroupName'},
+  {label:'Customer Search Term',key:'CustomerSearchTerm'},
+  {label:'Impressions',key:'Impressions'},
+  {label:'Clicks',key:'Clicks'},
+  {label:'Click Through Rate',key:'ClickThruRate'},
+  {label:'Cost Per Click',key:'CostPerClick'},
+  {label:'Spend',key:'Spend'},
+  {label:'Seven Day Total Sales',key:'SevenDayTotalSales'},
+  {label:'Total Advertising Cost of Sales',key:'TotalAdvertisingCostofSales'},
+  {label:'Total Return on Advertising Spend',key:'TotalReturnonAdvertisingSpend'},
+  {label:'Seven Day Total Orders',key:'SevenDayTotalOrders'},
+  {label:'Seven Day Total Units',key:'SevenDayTotalUnits'},
+  {label:'Seven Day Conversion Rate',key:'SevenDayConversionRate'},
+  {label:'Seven Day Advertised SKU Units',key:'SevenDayAdvertisedSKUUnits'},
+  {label:'Seven Day Other SKU Units',key:'SevenDayOtherSKUUnits'},
+  {label:'Seven Day Advertised SKU Sales',key:'SevenDayAdvertisedSKUSales'},
+  {label:'Seven Day Other SKU Sales',key:'SevenDayOtherSKUSales'},  
+  {label:'total Spend Weight',key:'totalSpendWeight'},
+  {label:'total Order Weight',key:'totalOrderWeight'},
+  {label:'total Weight',key:'totalWeight'},
+  {label:'total Impression Weight',key:'totalImpressionWeight'},
+  {label:'total ROAS Weight',key:'totalROASWeight'},
+  {label:'total Click Weight',key:'totalClickWeight'},]
 
   const [rawInput, setRawInput] = useState([])
   const [rows, setRows] = useState([])
@@ -124,6 +154,7 @@ function App() {
   return (
     <div>
       <CSVReader onFileLoaded={(data, fileInfo) => setRawInput(data)} />
+      <CSVLink  data={rows} headers={headers}>export CSV</CSVLink>
       <TableContainer style={{maxHeight:800}} component={Paper}>
       <Table stickyHeader className={classes.table} aria-label="simple table">
         <TableHead>
@@ -166,47 +197,6 @@ function App() {
         </TableBody>
       </Table>
     </TableContainer>
-      {/* <table>
-        <tr>
-          <th><b>Search Term</b></th>
-          <th><b>Targeting</b></th>
-          <th><b>Portfolio Name</b></th>
-          <th><b>ROAS</b></th>
-          <th><b>Total Orders</b></th>
-          <th><b>Clicks</b></th>
-          <th><b>Impression</b></th>
-          <th><b>Spend</b></th>
-          <th><b>total ROAS weight</b></th>
-          <th><b>total orders weight</b></th>
-          <th><b>total clicks weight</b></th>
-          <th><b>total impression weight</b></th>
-          <th><b>total spend weight</b></th>
-          <th><b>total weight</b></th>
-        </tr>
-
-        {rows.sort((a,b)=>{return b.totalWeight-a.totalWeight}).map(row => {
-          return (
-            <tr>
-              <th>{row.CustomerSearchTerm}</th>
-              <th>{row.Targeting}</th>
-              <th>{row.PortfolioName}</th>
-              <th>{row.TotalReturnonAdvertisingSpend}</th>
-              <th>{row.SevenDayTotalOrders}</th>
-              <th>{row.Clicks}</th>
-              <th>{row.Impressions}</th>
-              <th>{row.Spend}</th>
-              <th>{row.totalROASWeight ? row.totalROASWeight : 0}</th>
-              <th>{row.totalOrderWeight ? row.totalOrderWeight : 0}</th>
-              <th>{row.totalClickWeight ? row.totalClickWeight : 0}</th>
-              <th>{row.totalImpressionWeight ? row.totalImpressionWeight : 0}</th>
-              <th>{row.totalSpendWeight ? row.totalSpendWeight : 0}</th>
-              <th>{row.totalWeight}</th>
-
-            </tr>
-          )
-        })}
-      </table> */}
-
     </div>
   );
 }
