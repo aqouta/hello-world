@@ -8,10 +8,15 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
 import Paper from '@material-ui/core/Paper';
 import { makeStyles } from '@material-ui/core/styles';
 import './App.css';
 import {CSVLink} from 'react-csv'
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
 
 function App() {
 
@@ -52,6 +57,17 @@ function App() {
 
   const [rawInput, setRawInput] = useState([])
   const [rows, setRows] = useState([])
+  const [weights, setWeights] = useState([{columnKey:'TotalReturnonAdvertisingSpend',maximum:'30',multiplier:'.06'},
+      {columnKey:'SevenDayTotalOrders',maximum:'30',multiplier:'.06'},
+      {columnKey:'Clicks',maximum:'10',multiplier:'.02'},
+      {columnKey:'Impressions',maximum:'10',multiplier:'.002'},
+      {columnKey:'Spend',maximum:'20',multiplier:'.008'}])
+  const [dialogOpen, setDialogOpen] = useState(false)
+
+  useEffect(()=>{
+    console.log({weights})
+  },[weights])
+
   useEffect(() => {
     rawInput.shift();
     //console.log({rawInput,rawInput.shift()})
@@ -100,7 +116,7 @@ function App() {
         totalImpressionWeight = totalImpressions ? totalImpressions * 0.002 : 0
       }
       if (totalSpend > 25)
-        totalSpendWeight = 0.1;
+        totalSpendWeight = 0.2;
       else {
         totalSpendWeight = totalSpend ? totalSpend * 0.008 : 0
       }
@@ -150,11 +166,77 @@ function App() {
     })
     setRows(structureList);
   }, [rawInput])
+
+
+
+
   const classes = useStyles();
   return (
     <div>
+      <Dialog 
+        title="Weight lifting" 
+        fullWidth={true}
+        maxWidth={'md'}
+        open={dialogOpen} 
+        onClose={() => setDialogOpen(false)} 
+      >
+        <DialogTitle id="customized-dialog-title" onClose={() => setDialogOpen(false)}>
+          Weight Lifting
+        </DialogTitle>
+        <DialogContent>
+          <div>
+            <Button onClick={()=>{setWeights([...weights,{columnKey:null,multiplier:null,maximum:null}])}}>Add Weight</Button>
+            <div style={{paddingLeft:'10px',display:'flex'}}>
+              <div style={{width:'320px',display:'flex'}}><div>Column</div></div>
+              <div style={{width:'50px',display:'flex'}}><div>multiplier</div></div>
+              <div style={{width:'50px',paddingLeft:'40px',display:'flex'}}><div>maximum(%)</div></div>
+            </div>
+            <div>
+              {weights.map((weight,index) => {
+                return (
+                  <div style={{paddingLeft:'10px'}}>
+                    <Select
+                      style={{width:'280px'}}                      
+                      value={weight.columnKey}
+                      onChange={event => { 
+                        const tWeights = weights;
+                        tWeights[index].columnKey = event.target.value
+                        setWeights(tWeights)
+                        console.log({weights})
+                      }}
+                    >
+                      {headers.map(row => {
+                        return (<MenuItem value={row.key}>{row.label}</MenuItem>)
+                      })}
+                    </Select>
+                    <TextField 
+                      value={weight.multiplier}
+                      onChange={event=>{setWeights(prev=>{
+                          prev[index].multiplier = event.target.value
+                          return prev
+                        })}} 
+                      style={{width:'80px',paddingLeft:'40px'}} />
+                    <TextField 
+                      value={weight.maximum}
+                      onChange={event=>{setWeights(prev=>{
+                        prev[index].maximum = event.target.value
+                        return prev
+                      })}} 
+                      style={{width:'80px',paddingLeft:'40px'}} 
+                    />
+                    <Button style={{paddingLeft:'20px'}} >Remove</Button>
+                  </div>
+                )
+
+              })}
+            </div>
+
+          </div>
+        </DialogContent>
+      </Dialog>
       <CSVReader onFileLoaded={(data, fileInfo) => setRawInput(data)} />
       <CSVLink  data={rows} headers={headers}>export CSV</CSVLink>
+      <Button onClick={()=>setDialogOpen(!dialogOpen)}>Change Weights</Button>
       <TableContainer style={{maxHeight:800}} component={Paper}>
       <Table stickyHeader className={classes.table} aria-label="simple table">
         <TableHead>
